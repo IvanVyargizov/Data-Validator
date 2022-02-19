@@ -16,7 +16,7 @@ test:
 	./gradlew test
 
 lint:
-	./gradlew checkstyleMain
+	./gradlew checkstyleMain checkstyleTest
 
 check-updates:
 	./gradlew dependencyUpdates
