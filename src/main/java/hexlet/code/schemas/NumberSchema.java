@@ -48,7 +48,7 @@ public final class NumberSchema extends BaseSchema {
         return this;
     }
 
-    public NumberSchema range(int begin, int end) throws RuntimeException {
+    public NumberSchema range(int begin, int end) {
         if (end < begin) {
             throw new RuntimeException("\"range\" method parameter \"end\" cannot be less than \"begin\"");
         }
