@@ -17,9 +17,4 @@ public abstract class BaseSchema {
 
     public abstract boolean isValid(Object obj);
 
-    public final BaseSchema required() {
-        validations.put("required", true);
-        return this;
-    }
-
 }

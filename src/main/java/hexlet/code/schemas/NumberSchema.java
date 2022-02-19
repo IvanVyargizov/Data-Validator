@@ -43,6 +43,11 @@ public final class NumberSchema extends BaseSchema {
         return true;
     }
 
+    public NumberSchema required() {
+        getValidations().put("required", true);
+        return this;
+    }
+
     public NumberSchema positive() {
         getValidations().put("positive", true);
         return this;

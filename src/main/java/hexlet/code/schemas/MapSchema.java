@@ -48,6 +48,11 @@ public final class MapSchema extends BaseSchema {
         return true;
     }
 
+    public MapSchema required() {
+        getValidations().put("required", true);
+        return this;
+    }
+
     public MapSchema sizeof(int size) {
         if (size < 0) {
             throw new RuntimeException("\"sizeof\" method parameter cannot be less than 0");

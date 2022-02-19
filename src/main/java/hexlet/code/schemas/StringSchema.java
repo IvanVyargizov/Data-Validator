@@ -42,6 +42,11 @@ public final class StringSchema extends BaseSchema {
         return true;
     }
 
+    public StringSchema required() {
+        getValidations().put("required", true);
+        return this;
+    }
+
     public StringSchema minLength(int length) {
         if (length < 0) {
             throw new RuntimeException("\"minLength\" method parameter cannot be less than 0");
