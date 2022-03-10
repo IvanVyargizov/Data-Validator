@@ -9,9 +9,6 @@ clean:
 build:
 	./gradlew clean build
 
-install:
-	./gradlew clean install
-
 test:
 	./gradlew test
 
