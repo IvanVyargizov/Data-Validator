@@ -1,6 +1,6 @@
 package hexlet.code.schemas;
 
-import java.util.Objects;
+import java.util.function.Predicate;
 
 public final class NumberSchema extends BaseSchema {
 
@@ -9,47 +9,15 @@ public final class NumberSchema extends BaseSchema {
         super();
     }
 
-    @Override
-    public boolean isValid(Object obj) {
-        if (getValidations().isEmpty()) {
-            return Objects.isNull(obj);
-        }
-        boolean validStatus;
-        for (String validation : getValidations().keySet()) {
-            switch (validation) {
-                case "required" -> {
-                    validStatus = obj instanceof Integer;
-                    if (!validStatus) {
-                        return false;
-                    }
-                }
-                case "positive" -> {
-                    validStatus = obj instanceof Integer && (Integer) obj > 0;
-                    if (!validStatus) {
-                        return false;
-                    }
-                }
-                case "rangeBegin" -> {
-                    validStatus = obj instanceof Integer
-                            && (Integer) obj >= (Integer) getValidations().get("rangeBegin")
-                            && (Integer) obj <= (Integer) getValidations().get("rangeEnd");
-                    if (!validStatus) {
-                        return false;
-                    }
-                }
-                default -> { }
-            }
-        }
-        return true;
-    }
-
     public NumberSchema required() {
-        getValidations().put("required", true);
+        Predicate<Object> nonNull = obj -> obj instanceof Integer;
+        add(nonNull);
         return this;
     }
 
     public NumberSchema positive() {
-        getValidations().put("positive", true);
+        Predicate<Object> isPositive = obj -> obj instanceof Integer && (Integer) obj > 0;
+        add(isPositive);
         return this;
     }
 
@@ -57,8 +25,10 @@ public final class NumberSchema extends BaseSchema {
         if (end < begin) {
             throw new RuntimeException("\"range\" method parameter \"end\" cannot be less than \"begin\"");
         }
-        getValidations().put("rangeBegin", begin);
-        getValidations().put("rangeEnd", end);
+        Predicate<Object> isEnterRange = obj -> obj instanceof Integer
+                && (Integer) obj >= begin
+                && (Integer) obj <= end;
+        add(isEnterRange);
         return this;
     }
 
