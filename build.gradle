@@ -22,14 +22,12 @@ repositories {
 
 compileJava {
     options.release = 16
+    sourceCompatibility = 16
 }
 
 tasks.withType(JavaCompile) {
     options.fork = true
 }
-
-sourceCompatibility = 16
-targetCompatibility = 16
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.1'
