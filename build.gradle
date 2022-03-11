@@ -24,6 +24,10 @@ compileJava {
     options.release = 16
 }
 
+tasks.withType(JavaCompile) {
+    options.fork = true
+}
+
 sourceCompatibility = 16
 targetCompatibility = 16
 
