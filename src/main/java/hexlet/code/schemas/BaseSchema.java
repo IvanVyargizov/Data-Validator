@@ -14,14 +14,13 @@ public class BaseSchema {
     }
 
     public final void add(Predicate<Object> predicate) {
-//        StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
-//        StackWalker.StackFrame methodName = stackWalker.walk(
-//                stream1 -> stream1
-//                        .skip(1)
-//                        .findFirst()
-//                        .orElse(null));
-//        String id = this.getClass().getName() + methodName.getMethodName();
-        String id = "1";
+        StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+        StackWalker.StackFrame methodName = stackWalker.walk(
+                stream1 -> stream1
+                        .skip(1)
+                        .findFirst()
+                        .orElse(null));
+        String id = this.getClass().getName() + methodName.getMethodName();
         validations.put(id, predicate);
     }
 
