@@ -24,11 +24,8 @@ compileJava {
     options.release = 16
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(16)
-    }
-}
+sourceCompatibility = 16
+targetCompatibility = 16
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.1'
