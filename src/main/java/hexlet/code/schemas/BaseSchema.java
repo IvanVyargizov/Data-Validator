@@ -9,6 +9,10 @@ public abstract class BaseSchema {
 
     private final Map<String, Predicate<Object>> validations;
 
+    public final Map<String, Predicate<Object>> getValidations() {
+        return new HashMap<>(this.validations);
+    }
+
     public BaseSchema() {
         this.validations = new HashMap<>();
     }
@@ -23,16 +27,16 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-//        if (methodName.getMethodName().contains("required")) {
-//            this.validations.clear();
-//        }
-        this.validations.clear();
+        if (methodName.getMethodName().contains("required")) {
+            this.validations.clear();
+        }
         this.validations.put(id, predicate);
     }
 
-    public final boolean isValid(Object obj) {
+    @SuppressWarnings("checkstyle:designforextension")
+    public boolean isValid(Object obj) {
         if (this.validations.isEmpty()) {
-            if (Objects.isNull(obj) || (obj instanceof String && Objects.toString(obj).equals(""))) {
+            if (Objects.isNull(obj)) {
                 return true;
             } else {
                 required();
