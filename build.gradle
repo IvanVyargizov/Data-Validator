@@ -23,6 +23,7 @@ repositories {
 compileJava {
     options.release = 16
     sourceCompatibility = 16
+    targetCompatibility = 16
 }
 
 dependencies {
