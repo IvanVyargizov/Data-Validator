@@ -24,13 +24,14 @@ class ValidatorTest {
 
         assertThat(schema.isValid(null)).isEqualTo(true);
         assertThat(schema.isValid("")).isEqualTo(true);
-        assertThat(schema.isValid(fraze)).isEqualTo(false);
+        assertThat(schema.isValid(1)).isEqualTo(false);
+        assertThat(schema.isValid(fraze)).isEqualTo(true);
+        assertThat(schema.isValid(1)).isEqualTo(false);
 
-        schema.required();
         assertThat(schema.required()).isInstanceOf(StringSchema.class);
+
         assertThat(schema.isValid(null)).isEqualTo(false);
         assertThat(schema.isValid("")).isEqualTo(false);
-        assertThat(schema.isValid(fraze)).isEqualTo(true);
 
         assertThat(schema.contains("till").isValid(fraze)).isEqualTo(true);
         assertThat(schema.contains("MAKE").isValid(fraze)).isEqualTo(false);
@@ -63,12 +64,13 @@ class ValidatorTest {
         NumberSchema schema = v.number();
 
         assertThat(schema.isValid(null)).isEqualTo(true);
-        assertThat(schema.isValid(testPositiveNumber10)).isEqualTo(false);
-
-        schema.required();
-        assertThat(schema.required()).isInstanceOf(NumberSchema.class);
-        assertThat(schema.isValid(null)).isEqualTo(false);
         assertThat(schema.isValid("10")).isEqualTo(false);
+        assertThat(schema.isValid(testPositiveNumber10)).isEqualTo(true);
+        assertThat(schema.isValid("10")).isEqualTo(false);
+
+        assertThat(schema.required()).isInstanceOf(NumberSchema.class);
+
+        assertThat(schema.isValid(null)).isEqualTo(false);
         assertThat(schema.isValid(testPositiveNumber5)).isEqualTo(true);
 
         assertThat(schema.positive().isValid(testPositiveNumber10)).isEqualTo(true);
@@ -96,14 +98,13 @@ class ValidatorTest {
         MapSchema schema = v.map();
 
         assertThat(schema.isValid(null)).isEqualTo(true);
-        assertThat(schema.isValid(new HashMap<>())).isEqualTo(false);
-        assertThat(schema.isValid("10")).isEqualTo(false);
-
-        schema.required();
-        assertThat(schema.required()).isInstanceOf(MapSchema.class);
-        assertThat(schema.isValid(null)).isEqualTo(false);
         assertThat(schema.isValid("10")).isEqualTo(false);
         assertThat(schema.isValid(new HashMap<>())).isEqualTo(true);
+
+        assertThat(schema.required()).isInstanceOf(MapSchema.class);
+
+        assertThat(schema.isValid(null)).isEqualTo(false);
+        assertThat(schema.isValid("10")).isEqualTo(false);
 
         Map<String, String> data = new HashMap<>();
         data.put("key1", "value1");

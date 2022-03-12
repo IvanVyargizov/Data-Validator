@@ -5,13 +5,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class BaseSchema {
+public abstract class BaseSchema {
 
     private final Map<String, Predicate<Object>> validations;
 
     public BaseSchema() {
         this.validations = new HashMap<>();
     }
+
+    public abstract BaseSchema required();
 
     public final void add(Predicate<Object> predicate) {
         StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
@@ -26,7 +28,11 @@ public class BaseSchema {
 
     public final boolean isValid(Object obj) {
         if (this.validations.isEmpty()) {
-            return Objects.isNull(obj) || (obj instanceof String && Objects.toString(obj).equals(""));
+            if (Objects.isNull(obj) || (obj instanceof String && Objects.toString(obj).equals(""))) {
+                return true;
+            } else {
+                required();
+            }
         }
         for (Predicate<Object> predicate : this.validations.values()) {
             if (!predicate.test(obj)) {

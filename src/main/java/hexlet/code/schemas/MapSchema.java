@@ -10,6 +10,7 @@ public final class MapSchema extends BaseSchema {
         super();
     }
 
+    @Override
     public MapSchema required() {
         Predicate<Object> nonNull = obj -> obj instanceof Map<?, ?>;
         add(nonNull);

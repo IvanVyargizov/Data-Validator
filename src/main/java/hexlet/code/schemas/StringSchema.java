@@ -8,6 +8,7 @@ public final class StringSchema extends BaseSchema {
         super();
     }
 
+    @Override
     public StringSchema required() {
         Predicate<Object> nonNull = obj -> obj instanceof String && !obj.toString().isEmpty();
         add(nonNull);
