@@ -43,6 +43,10 @@ class ValidatorTest {
         assertThat(schema.minLength(rightLengthFraze).isValid(fraze)).isEqualTo(true);
         assertThat(schema.minLength(wrongLengthFraze).isValid(fraze)).isEqualTo(false);
 
+        schema.required();
+
+        assertThat(schema.isValid(fraze)).isEqualTo(true);
+
         Assertions.assertThrows(RuntimeException.class, () -> schema.minLength(-1));
 
     }
@@ -66,6 +70,8 @@ class ValidatorTest {
         assertThat(schema.isValid(null)).isEqualTo(true);
         assertThat(schema.isValid("10")).isEqualTo(false);
         assertThat(schema.isValid(testPositiveNumber10)).isEqualTo(true);
+        assertThat(schema.isValid(testNegativeNumber10)).isEqualTo(true);
+        assertThat(schema.isValid(0)).isEqualTo(true);
         assertThat(schema.isValid("10")).isEqualTo(false);
 
         assertThat(schema.required()).isInstanceOf(NumberSchema.class);
@@ -88,6 +94,10 @@ class ValidatorTest {
         assertThat(schema.isValid(testNegativeNumber7)).isEqualTo(false);
         assertThat(schema.isValid(testNegativeNumber11)).isEqualTo(false);
         assertThat(schema.isValid(testNegativeNumber4)).isEqualTo(false);
+
+        schema.required();
+
+        assertThat(schema.isValid(testNegativeNumber10)).isEqualTo(true);
 
         Assertions.assertThrows(RuntimeException.class, () -> schema.range(testPositiveNumber10, testPositiveNumber5));
     }
@@ -115,6 +125,10 @@ class ValidatorTest {
         data.put("key3", "value3");
         assertThat(schema.isValid(data)).isEqualTo(false);
 
+        schema.required();
+
+        assertThat(schema.isValid(data)).isEqualTo(true);
+
         Assertions.assertThrows(RuntimeException.class, () -> schema.sizeof(-1));
     }
 
@@ -133,6 +147,7 @@ class ValidatorTest {
         schemas1.put("name", v.string().required());
         schemas1.put("age", v.number().positive());
         schema1.shape(schemas1);
+
         assertThat(schema1.shape(schemas1)).isInstanceOf(MapSchema.class);
 
         Map<String, Object> human1 = new HashMap<>();
@@ -158,7 +173,7 @@ class ValidatorTest {
         MapSchema schema2 = v.map();
 
         Map<String, BaseSchema> schemas2 = new HashMap<>();
-        schemas2.put("name", v.string().minLength(testPositiveNumber7).required());
+        schemas2.put("name", v.string().minLength(testPositiveNumber7));
         schemas2.put("age", v.number().positive().range(testPositiveNumber5, testPositiveNumber10));
         schema2.shape(schemas2);
 

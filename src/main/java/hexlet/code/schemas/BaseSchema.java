@@ -23,7 +23,10 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        validations.put(id, predicate);
+        if (methodName.getMethodName().contains("required")) {
+            this.validations.clear();
+        }
+        this.validations.put(id, predicate);
     }
 
     public final boolean isValid(Object obj) {
