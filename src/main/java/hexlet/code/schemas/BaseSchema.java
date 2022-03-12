@@ -23,9 +23,10 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        if (methodName.getMethodName().contains("required")) {
-            this.validations.clear();
-        }
+//        if (methodName.getMethodName().contains("required")) {
+//            this.validations.clear();
+//        }
+        this.validations.clear();
         this.validations.put(id, predicate);
     }
 
