@@ -1,7 +1,6 @@
 package hexlet.code.schemas;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -28,9 +27,7 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        if (methodName.getMethodName().contains("required")) {
-            this.validations.clear();
-        }
+        this.validations.clear();
         this.validations.put(id, predicate);
     }
 
@@ -41,9 +38,9 @@ public abstract class BaseSchema {
                 return true;
             } else {
                 required();
-                List<Predicate<Object>> pr = this.validations.values().stream().toList();
+                Predicate<Object> pr = this.validations.values().stream().toList().get(0);
                 this.validations.clear();
-                return pr.get(0).test(obj);
+                return pr.test(obj);
             }
         }
         for (Predicate<Object> predicate : this.validations.values()) {
