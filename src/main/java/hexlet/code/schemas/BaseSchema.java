@@ -27,7 +27,9 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        this.validations.clear();
+        if (methodName.getMethodName().contains("required")) {
+            this.validations.clear();
+        }
         this.validations.put(id, predicate);
     }
 
@@ -38,9 +40,6 @@ public abstract class BaseSchema {
                 return true;
             } else {
                 required();
-                Predicate<Object> pr = this.validations.values().stream().toList().get(0);
-                this.validations.clear();
-                return pr.test(obj);
             }
         }
         for (Predicate<Object> predicate : this.validations.values()) {
