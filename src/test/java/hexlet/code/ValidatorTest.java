@@ -23,9 +23,9 @@ class ValidatorTest {
         StringSchema schema = v.string();
 
         assertThat(schema.isValid(null)).isEqualTo(true);
-
-        assertThat(schema.isValid(null)).isEqualTo(true);
         assertThat(schema.isValid("")).isEqualTo(true);
+        assertThat(schema.minLength(1).isValid(null)).isEqualTo(true);
+        assertThat(schema.minLength(1).isValid("")).isEqualTo(true);
         assertThat(schema.isValid(1)).isEqualTo(false);
         assertThat(schema.isValid(fraze)).isEqualTo(true);
         assertThat(schema.isValid(1)).isEqualTo(false);
@@ -70,9 +70,14 @@ class ValidatorTest {
         NumberSchema schema = v.number();
 
         assertThat(schema.isValid(null)).isEqualTo(true);
+        assertThat(schema.positive().isValid(null)).isEqualTo(true);
         assertThat(schema.isValid("10")).isEqualTo(false);
         assertThat(schema.isValid("")).isEqualTo(false);
         assertThat(schema.isValid(testPositiveNumber10)).isEqualTo(true);
+        assertThat(schema.isValid(testNegativeNumber10)).isEqualTo(false);
+
+        schema.required();
+
         assertThat(schema.isValid(testNegativeNumber10)).isEqualTo(true);
         assertThat(schema.isValid(0)).isEqualTo(true);
         assertThat(schema.isValid("10")).isEqualTo(false);
@@ -162,7 +167,7 @@ class ValidatorTest {
         Map<String, Object> human2 = new HashMap<>();
         human2.put("name", "Maya");
         human2.put("age", null);
-        assertThat(schema1.isValid(human2)).isEqualTo(false);
+        assertThat(schema1.isValid(human2)).isEqualTo(true);
 
         Map<String, Object> human3 = new HashMap<>();
         human3.put("name", null);

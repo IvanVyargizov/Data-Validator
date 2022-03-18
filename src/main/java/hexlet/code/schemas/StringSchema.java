@@ -18,7 +18,9 @@ public final class StringSchema extends BaseSchema {
 
     @Override
     public boolean isValid(Object obj) {
-        if (getValidations().isEmpty() && !Objects.isNull(obj) && obj.equals("")) {
+        if ((getValidations().isEmpty() || getValidations().keySet().stream()
+                .noneMatch(str -> str.contains("required")))
+                && !Objects.isNull(obj) && obj.equals("")) {
             return true;
         }
         return super.isValid(obj);

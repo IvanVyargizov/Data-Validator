@@ -9,6 +9,8 @@ public abstract class BaseSchema {
 
     private final Map<String, Predicate<Object>> validations;
 
+    private String idRequired;
+
     public final Map<String, Predicate<Object>> getValidations() {
         return new HashMap<>(this.validations);
     }
@@ -27,27 +29,34 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        if (methodName.getMethodName().contains("required")) {
+        if (id.contains("required")) {
             this.validations.clear();
+            this.idRequired = id;
         }
         this.validations.put(id, predicate);
     }
 
     @SuppressWarnings("checkstyle:designforextension")
     public boolean isValid(Object obj) {
-        if (this.validations.isEmpty()) {
+        int checker = 0;
+        if (this.validations.isEmpty() || !this.validations.containsKey(this.idRequired)) {
             if (Objects.isNull(obj)) {
                 return true;
             } else {
+                Map<String, Predicate<Object>> copyValidations = new HashMap<>(this.validations);
                 required();
+                this.validations.putAll(copyValidations);
+                checker = 1;
             }
         }
+        boolean isValidate = true;
         for (Predicate<Object> predicate : this.validations.values()) {
-            if (!predicate.test(obj)) {
-                return false;
-            }
+            isValidate = isValidate && predicate.test(obj);
         }
-        return true;
+        if (checker == 1) {
+            this.validations.remove(this.idRequired);
+        }
+        return isValidate;
     }
 
 }
