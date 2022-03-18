@@ -30,7 +30,7 @@ public abstract class BaseSchema {
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
         if (id.contains("required")) {
-            this.validations.clear();
+//            this.validations.clear();
             this.idRequired = id;
         }
         this.validations.put(id, predicate);
