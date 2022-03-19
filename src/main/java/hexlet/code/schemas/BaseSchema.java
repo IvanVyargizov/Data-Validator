@@ -29,29 +29,34 @@ public abstract class BaseSchema {
                         .findFirst()
                         .orElse(null));
         String id = this.getClass().getName() + methodName.getMethodName();
-        if (id.contains("required")) {
-//            this.validations.clear();
+        if (id.equals(this.getClass().getPackageName() + "." + this.getClass().getSimpleName() + "required")) {
             this.idRequired = id;
         }
         this.validations.put(id, predicate);
     }
 
-    @SuppressWarnings("checkstyle:designforextension")
+    /**
+     * Returns a boolean value after checking the passed parameter by the chain of validators.
+     *
+     * @param   obj the Object to validate along the chain of validators
+     * @return      the boolean value
+     */
     public boolean isValid(Object obj) {
         int checker = 0;
         if (this.validations.isEmpty() || !this.validations.containsKey(this.idRequired)) {
             if (Objects.isNull(obj)) {
                 return true;
             } else {
-                Map<String, Predicate<Object>> copyValidations = new HashMap<>(this.validations);
                 required();
-                this.validations.putAll(copyValidations);
                 checker = 1;
             }
         }
         boolean isValidate = true;
         for (Predicate<Object> predicate : this.validations.values()) {
-            isValidate = isValidate && predicate.test(obj);
+            isValidate = predicate.test(obj);
+            if (!isValidate) {
+                break;
+            }
         }
         if (checker == 1) {
             this.validations.remove(this.idRequired);
