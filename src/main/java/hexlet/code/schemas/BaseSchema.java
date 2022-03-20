@@ -7,12 +7,16 @@ import java.util.function.Predicate;
 
 public abstract class BaseSchema {
 
-    private final Map<String, Predicate<Object>> validations;
+    private final Map<Long, Predicate<Object>> validations;
 
-    private String idRequired;
+    private long idRequired;
 
-    public final Map<String, Predicate<Object>> getValidations() {
+    public final Map<Long, Predicate<Object>> getValidations() {
         return new HashMap<>(this.validations);
+    }
+
+    public final long getIdRequired() {
+        return this.idRequired;
     }
 
     public BaseSchema() {
@@ -28,8 +32,8 @@ public abstract class BaseSchema {
                         .skip(1)
                         .findFirst()
                         .orElse(null));
-        String id = this.getClass().getName() + methodName.getMethodName();
-        if (id.equals(this.getClass().getPackageName() + "." + this.getClass().getSimpleName() + "required")) {
+        long id = (this.getClass().getName() + methodName.getMethodName()).hashCode();
+        if (id == (this.getClass().getPackageName() + "." + this.getClass().getSimpleName() + "required").hashCode()) {
             this.idRequired = id;
         }
         this.validations.put(id, predicate);
