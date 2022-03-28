@@ -32,7 +32,9 @@ public class Example {
 All schemas inherited from the `BaseScheme` inherit the following methods:
 - `required()` - abstract method that assumes the implementation of checking the value to any suitable non-null value
 - `add(Predicate<Object>)` - method that adds a predicate to the chain of conditions
-- `isValid(Object)` - method that returns a boolean depending on whether the condition value passed in the predicate chain 
+- `isValid(Object)` - method that returns a boolean depending on whether the condition value passed in the predicate chain. 
+
+If no predicate is passed, or method `required()` predicate is not passed in the predicate chain, then `isValid(Object)` returns `true` for `null` object and `false` for `non null` object.
 
 ### StringSchema
 
@@ -56,7 +58,8 @@ stringSchema.isValid(""); // true
 stringSchema.isValid(null); // true
 
 stringSchema.isValid("fake it till you make it"); // true
-// return value is true because method 'isValid' always implicitly checks the passed value by method 'required()' and does not store the 'required()' method in the chain of checks
+// return value is true because method 'isValid' always implicitly checks the passed value 
+// by method 'required()' and does not store the 'required()' method in the chain of checks
 
 stringSchema.isValid(""); // true
 stringSchema.isValid(null); // true
@@ -75,7 +78,8 @@ stringSchema.contains("fake").isValid("fake it till you make it"); // true
 stringSchema.contains("MAKE").isValid("fake it till you make it"); // false
 
 stringSchema.minLength(1).isValid("fake it till you make it"); // false
-// return value is false because the chain of checks (predicates) contains the previous check `contains("MAKE")` which is false
+// return value is false because the chain of checks (predicates) contains 
+// the previous check `contains("MAKE")` which is false
 ```
 
 ### NumberSchema
@@ -99,7 +103,8 @@ NumberSchema numberSchema = validator.number();
 numberSchema.isValid(null); // true
 
 numberSchema.isValid(5); // true
-// return value is true because method 'isValid' always implicitly checks the passed value by method 'required()' and does not store the 'required()' method in the chain of checks
+// return value is true because method 'isValid' always implicitly checks the passed value
+// by method 'required()' and does not store the 'required()' method in the chain of checks
 
 numberSchema.isValid(null); // true
 // return value is true because method 'required()' does not explicitly in the chain of checks
@@ -130,7 +135,8 @@ numberSchema.isValid(-7); // false
 numberSchema.isValid(-10); // false
 numberSchema.isValid(-4); // false
 numberSchema.isValid(-11); // false
-// return value is false because the chain of checks (predicates) contains the previous check `positive()` which is false
+// return value is false because the chain of checks (predicates) contains
+// the previous check `positive()` which is false
 ```
 
 ### MapSchema
@@ -154,7 +160,8 @@ MapSchema mapSchema = validator.map();
 mapSchema.isValid(null); // true
 
 mapSchema.isValid(new HashMap()); // true
-// return value is true because method 'isValid' always implicitly checks the passed value by method 'required()' and does not store the 'required()' method in the chain of checks
+// return value is true because method 'isValid' always implicitly checks the passed value
+// by method 'required()' and does not store the 'required()' method in the chain of checks
 
 mapSchema.isValid(null); // true
 // return value is true because method 'required()' does not explicitly in the chain of checks
@@ -190,14 +197,16 @@ human1.put("name", "Kolya");
 human1.put("age", 15);
 
 mapSchema.isValid(human1); // true
-// return value of 'v.number().positive()' is true because method 'isValid' always implicitly checks the passed value by method 'required()' and does not store the 'required()' method in the chain of check
+// return value of 'v.number().positive()' is true because method 'isValid' always implicitly checks
+// the passed value by method 'required()' and does not store the 'required()' method in the chain of check
 
 Map<String, Object> human2 = new HashMap<>();
 human2.put("name", "Maya");
 human2.put("age", null); 
 
 mapSchema.isValid(human2); // true
-// return value of 'v.number().positive()' is true because method 'required()' does not explicitly in the chain of checks
+// return value of 'v.number().positive()' is true
+// because method 'required()' does not explicitly in the chain of checks
 
 Map<String, Object> human3 = new HashMap<>();
 human3.put("name", "");
