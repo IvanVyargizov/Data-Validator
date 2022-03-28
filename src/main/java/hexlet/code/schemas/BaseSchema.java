@@ -7,24 +7,22 @@ import java.util.function.Predicate;
 
 public abstract class BaseSchema {
 
-    private final Map<Long, Predicate<Object>> validations;
+    private final Map<String, Predicate<Object>> validations = new HashMap<>();
 
-    private long idRequired;
-
-    public final Map<Long, Predicate<Object>> getValidations() {
+    public final Map<String, Predicate<Object>> getValidations() {
         return new HashMap<>(this.validations);
-    }
-
-    public final long getIdRequired() {
-        return this.idRequired;
-    }
-
-    public BaseSchema() {
-        this.validations = new HashMap<>();
     }
 
     public abstract BaseSchema required();
 
+    // По замечанию: немного упростил свою первую реализацию, но в целом хочу попробовать отстоять свое решение:
+    // По моему решению, использующему реализованную библиотеку, не придется придумывать самому имя для
+    // валидатора (validatorName), достаточно просто передать один параметр (предикат) в метод add
+    // и не вдаваться в то, как реализован метод add внутри.
+    // Также в isValid я проверяю наличие абстрактного метода required в мапе validations по ключу String "required"
+    // и если добавлять параметр validatorName, то я должен быть уверен, что при реализации этого метода,
+    // в add будет передан именно validatorName = String "required",
+    // то есть шанс неправильного использования матода add кратно возрастет
     public final void add(Predicate<Object> predicate) {
         StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
         StackWalker.StackFrame methodName = stackWalker.walk(
@@ -32,11 +30,8 @@ public abstract class BaseSchema {
                         .skip(1)
                         .findFirst()
                         .orElse(null));
-        long id = (this.getClass().getName() + methodName.getMethodName()).hashCode();
-        if (id == (this.getClass().getPackageName() + "." + this.getClass().getSimpleName() + "required").hashCode()) {
-            this.idRequired = id;
-        }
-        this.validations.put(id, predicate);
+        String key = methodName.getMethodName();
+        this.validations.put(key, predicate);
     }
 
     /**
@@ -46,24 +41,20 @@ public abstract class BaseSchema {
      * @return      the boolean value
      */
     public boolean isValid(Object obj) {
-        int checker = 0;
-        if (this.validations.isEmpty() || !this.validations.containsKey(this.idRequired)) {
-            if (Objects.isNull(obj)) {
-                return true;
-            } else {
-                required();
-                checker = 1;
-            }
+        boolean hasRequired = this.validations.containsKey("required");
+        if (Objects.isNull(obj) && !hasRequired) {
+            return true;
         }
+        required();
         boolean isValidate = true;
         for (Predicate<Object> predicate : this.validations.values()) {
-            isValidate = predicate.test(obj);
-            if (!isValidate) {
+            if (!predicate.test(obj)) {
+                isValidate = false;
                 break;
             }
         }
-        if (checker == 1) {
-            this.validations.remove(this.idRequired);
+        if (!hasRequired) {
+            this.validations.remove("required");
         }
         return isValidate;
     }

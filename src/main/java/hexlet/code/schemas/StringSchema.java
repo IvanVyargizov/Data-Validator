@@ -5,25 +5,25 @@ import java.util.function.Predicate;
 
 public final class StringSchema extends BaseSchema {
 
-    public StringSchema() {
-        super();
+    // По замечанию, что переопределние метода isValid избыточно:
+    // isValid в классе BaseSchema при переданном obj = null и отсутствии переданных валидаторов
+    // или не переданном валидаторе required возвращает true,
+    // и соответственно все классы наследники унаследуют эту логику.
+    // По заданию в шагах проекта для класса наследника StringSchema для переданного obj = ""
+    // должна выполнятся та же логика, что и для obj = null.
+    // если прописать этот вариант для obj = "" в классе родителе BaseSchema,
+    // то эту логику унаследуют и все классы наследники, но такая логика мне нужна только в StringSchema,
+    // поэтому в StringSchema я переопределяю класс IsValid добавляя проверку для obj = ""
+    @Override
+    public boolean isValid(Object obj) {
+        return Objects.equals(obj, "") && !getValidations().containsKey("required") || super.isValid(obj);
     }
 
     @Override
     public StringSchema required() {
-        Predicate<Object> nonNull = obj -> obj instanceof String && !obj.toString().isEmpty();
+        Predicate<Object> nonNull = obj -> obj instanceof String && !Objects.equals(obj, "");
         add(nonNull);
         return this;
-    }
-
-    @Override
-    public boolean isValid(Object obj) {
-        if ((getValidations().isEmpty() || getValidations().keySet().stream()
-                .noneMatch(i -> i == getIdRequired()))
-                && !Objects.isNull(obj) && obj.equals("")) {
-            return true;
-        }
-        return super.isValid(obj);
     }
 
     public StringSchema minLength(int length) {

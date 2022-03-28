@@ -4,10 +4,6 @@ import java.util.function.Predicate;
 
 public final class NumberSchema extends BaseSchema {
 
-    public NumberSchema() {
-        super();
-    }
-
     @Override
     public NumberSchema required() {
         Predicate<Object> nonNull = obj -> obj instanceof Integer;

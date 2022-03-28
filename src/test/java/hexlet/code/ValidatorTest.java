@@ -114,12 +114,12 @@ class ValidatorTest {
 
         Map<String, String> data = new HashMap<>();
         data.put("key1", "value1");
-        data.put("key2", "value2");
 
-        schema.sizeof(2);
+        schema.sizeof(1);
         assertThat(schema.isValid(data)).isEqualTo(true);
-        data.put("key3", "value3");
+        data.put("key2", "value2");
         assertThat(schema.isValid(data)).isEqualTo(false);
+        assertThat(schema.sizeof(2).isValid(data)).isEqualTo(true);
 
         Assertions.assertThrows(RuntimeException.class, () -> schema.sizeof(-1));
     }

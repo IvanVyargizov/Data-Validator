@@ -1,14 +1,9 @@
 package hexlet.code.schemas;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public final class MapSchema extends BaseSchema {
-
-    public MapSchema() {
-        super();
-    }
 
     @Override
     public MapSchema required() {
@@ -27,15 +22,13 @@ public final class MapSchema extends BaseSchema {
     }
 
     public MapSchema shape(Map<String, BaseSchema> schemas) {
-        Predicate<Object> isValid = obj -> {
-            if (!(obj instanceof Map<?, ?>)) {
-                return false;
-            }
-            Optional<Boolean> optional = ((Map<?, ?>) obj).keySet().stream()
-                    .map(k -> schemas.get(k).isValid(((Map<?, ?>) obj).get(k)))
-                    .reduce((b1, b2) -> b1 && b2);
-            return optional.orElse(false);
-        };
+        Predicate<Object> isValid = obj -> obj instanceof Map<?, ?> && schemas.entrySet().stream()
+                .allMatch(check -> {
+                    final Object key = check.getKey();
+                    final Object value = ((Map<?, ?>) obj).get(key);
+                    final BaseSchema validator = check.getValue();
+                    return validator.isValid(value);
+                });
         add(isValid);
         return this;
     }
