@@ -6,8 +6,7 @@ public final class NumberSchema extends BaseSchema {
 
     @Override
     public NumberSchema required() {
-        Predicate<Object> nonNull = obj -> obj instanceof Integer;
-        add(nonNull);
+        setRequiredFor(Integer.class);
         return this;
     }
 

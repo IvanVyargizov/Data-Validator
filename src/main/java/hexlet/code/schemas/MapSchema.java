@@ -7,8 +7,7 @@ public final class MapSchema extends BaseSchema {
 
     @Override
     public MapSchema required() {
-        Predicate<Object> nonNull = obj -> obj instanceof Map<?, ?>;
-        add(nonNull);
+        setRequiredFor(Map.class);
         return this;
     }
 
