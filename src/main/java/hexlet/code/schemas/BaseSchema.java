@@ -37,7 +37,19 @@ public abstract class BaseSchema {
         if (!hasRequired && Objects.isNull(obj)) {
             return true;
         } else if (!hasRequired) {
+            List<Predicate<Object>> copy = new ArrayList<>(this.validations);
+            this.validations.clear();
             required();
+            boolean isValid = true;
+            for (Predicate<Object> predicate : this.validations) {
+                if (!predicate.test(obj)) {
+                    isValid = false;
+                    break;
+                }
+            }
+            this.validations.clear();
+            this.validations.addAll(copy);
+            return isValid;
         }
         for (Predicate<Object> predicate : this.validations) {
             if (!predicate.test(obj)) {
